@@ -1,7 +1,7 @@
 describe('Quiz Application', () => {
   beforeEach(() => {
     // Visit the application before each test
-    cy.visit('http://localhost:3000'); // Adjust the URL based on your local setup
+    cy.visit('http://localhost:3001');
   });
 
   it('should start the quiz and display questions', () => {

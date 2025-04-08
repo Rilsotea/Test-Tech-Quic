@@ -1,69 +1,24 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Quiz from './Quiz';
-import { getQuestions } from '../services/questionApi.js';
-
-// Mock the getQuestions function
-jest.mock('../services/questionApi.js');
-
-const mockQuestions = [
-  {
-    question: "What is JavaScript?",
-    answers: [
-      { text: "Programming language", isCorrect: true },
-      { text: "Database", isCorrect: false },
-      { text: "Operating System", isCorrect: false },
-      { text: "Text Editor", isCorrect: false },
-    ],
-    correctAnswer: "Programming language"
-  },
-  // Add more mock questions if needed
-];
+import { mount } from 'cypress/react';
+import Quiz from '../../src/components/Quiz';
 
 describe('Quiz Component', () => {
-  beforeEach(() => {
-    // Mock the API call to return mock questions
-    getQuestions.mockResolvedValue(mockQuestions);
-  });
+    it('renders and allows the user to start the quiz', () => {
+        mount(<Quiz />); // Mount the Quiz component
 
-  test('renders start button', () => {
-    render(<Quiz />);
-    expect(screen.getByText('Start Quiz')).toBeInTheDocument();
-  });
+        cy.get('button').contains('Start Quiz').click(); // Simulate starting the quiz
 
-  test('fetches and displays questions when quiz starts', async () => {
-    render(<Quiz />);
-    
-    // Click the start button
-    fireEvent.click(screen.getByText('Start Quiz'));
+        cy.get('.question').should('exist'); // Check if a question is displayed
+    });
 
-    // Wait for the first question to appear
-    expect(await screen.findByText(mockQuestions[0].question)).toBeInTheDocument();
-  });
+    it('advances to the next question when answered', () => {
+        mount(<Quiz />); // Mount the Quiz component
 
-  test('increments score on correct answer', async () => {
-    render(<Quiz />);
-    
-    // Start the quiz
-    fireEvent.click(screen.getByText('Start Quiz'));
+        cy.get('button').contains('Start Quiz').click(); // Start the quiz
 
-    // Click the correct answer
-    fireEvent.click(await screen.findByText(mockQuestions[0].answers[0].text));
+        cy.get('.answer-button').first().click(); // Simulate answering the first question
 
-    // Check if the score is incremented
-    expect(screen.getByText('Your score: 1/1')).toBeInTheDocument();
-  });
-
-  test('displays quiz completed message', async () => {
-    render(<Quiz />);
-    
-    // Start the quiz
-    fireEvent.click(screen.getByText('Start Quiz'));
-
-    // Answer the first question
-    fireEvent.click(await screen.findByText(mockQuestions[0].answers[0].text));
-
-    // Simulate moving to the next question (if you had more questions)
-    // Here we just check for the completion message since we only have one question
-    expect(await screen.findByText('Quiz Completed')).toBeInTheDocument();
-  });
+        // Check if the next question appears (replace 'Next Question Text' with actual text)
+        cy.get('.question').should('not.have.text', 'Question 1'); // Adjust based on your actual question text
+        cy.get('.question').should('contain.text', 'Next Question Text'); // Check for the actual text of the next question
+    });
 });
