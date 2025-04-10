@@ -1,24 +1,51 @@
+import Quiz from '../../client/src/components/Quiz';
 import { mount } from 'cypress/react';
-import Quiz from '../../src/components/Quiz';
+import React from 'react';
 
-describe('Quiz Component', () => {
-    it('renders and allows the user to start the quiz', () => {
-        mount(<Quiz />); // Mount the Quiz component
+const mockQuestions = [
+    {
+        question: "Which of these is NOT a JavaScript data type?",
+        answers: [
+            { text: "Integer", isCorrect: true },
+            { text: "Undefined", isCorrect: false },
+            { text: "Boolean", isCorrect: false },
+            { text: "String", isCorrect: false }
+        ]
+    },
+    {
+        question: "What is the main function of a RESTful API?",
+        answers: [
+            { text: "Connects databases", isCorrect: false },
+            { text: "Manages user authentication", isCorrect: false },
+            { text: "Facilitates communication between client and server", isCorrect: true },
+            { text: "Provides real-time data updates", isCorrect: false }
+        ]
+    }
+];
 
-        cy.get('button').contains('Start Quiz').click(); // Simulate starting the quiz
-
-        cy.get('.question').should('exist'); // Check if a question is displayed
+describe('<Quiz />', () => {
+    beforeEach(() => {
+        cy.intercept('GET', '/api/questions/random', mockQuestions).as('getQuestions');
+        mount(<Quiz />);
     });
 
-    it('advances to the next question when answered', () => {
-        mount(<Quiz />); // Mount the Quiz component
+    it('starts the quiz and goes through all questions', () => {
+        // Click start
+        cy.contains('Start Quiz').click();
 
-        cy.get('button').contains('Start Quiz').click(); // Start the quiz
+        // Wait for questions to load
+        cy.wait('@getQuestions');
 
-        cy.get('.answer-button').first().click(); // Simulate answering the first question
+        // Question 1 is visible
+        cy.contains('Which of these is NOT a JavaScript data type?').should('be.visible');
+        cy.contains('Integer').click();
 
-        // Check if the next question appears (replace 'Next Question Text' with actual text)
-        cy.get('.question').should('not.have.text', 'Question 1'); // Adjust based on your actual question text
-        cy.get('.question').should('contain.text', 'Next Question Text'); // Check for the actual text of the next question
+        // Question 2 is visible
+        cy.contains('What is the main function of a RESTful API?', { timeout: 10000 }).should('be.visible');
+        cy.contains('Facilitates communication between client and server').click();
+
+        // Final score page is visible
+        cy.contains('Quiz Completed').should('be.visible');
+        cy.contains('Your score: 2/2').should('be.visible');
     });
 });

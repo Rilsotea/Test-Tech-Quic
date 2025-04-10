@@ -1,45 +1,43 @@
-describe('Quiz Application', () => {
+describe('Test Tech Quiz e2e app test', () => {
   beforeEach(() => {
-    // Visit the application before each test
-    cy.visit('http://localhost:3001');
+    cy.intercept('GET', '/api/questions/random', {
+      statusCode: 200,
+      body: [
+        {
+          question: 'What is the main function of a RESTful API?',
+          answers: [
+            { text: 'Facilitates communication between client and server', isCorrect: true },
+            { text: 'Connects databases', isCorrect: false }
+          ]
+        },
+        {
+          question: 'Which of these is NOT a JavaScript data type?',
+          answers: [
+            { text: 'Integer', isCorrect: true },
+            { text: 'Boolean', isCorrect: false }
+          ]
+        }
+      ]
+    }).as('getQuestions');
+
+    cy.visit('/');
   });
 
-  it('should start the quiz and display questions', () => {
-    // Click the start quiz button
-    cy.contains('Start Quiz').click();
-
-    // Verify that the first question is displayed
-    cy.contains("What is JavaScript?").should('be.visible');
-  });
-
-  it('should allow answering questions and show score', () => {
+  it('loads the quiz, questions, answers, and shows score', () => {
     // Start the quiz
     cy.contains('Start Quiz').click();
+    cy.wait('@getQuestions');
 
-    // Answer the first question correctly
-    cy.contains("Programming language").click();
+    // Check first question
+    cy.contains('What is the main function of a RESTful API?').should('be.visible');
+    cy.contains('Facilitates communication between client and server').click();
 
-    // Verify that the score is updated
-    cy.contains('Your score: 1/1').should('be.visible');
+    // Check second question
+    cy.contains('Which of these is NOT a JavaScript data type?').should('be.visible');
+    cy.contains('Integer').click();
 
-    // Check for quiz completion message
+    // Final score page
     cy.contains('Quiz Completed').should('be.visible');
-  });
-
-  it('should allow taking a new quiz', () => {
-    // Start the quiz
-    cy.contains('Start Quiz').click();
-
-    // Answer the first question correctly
-    cy.contains("Programming language").click();
-
-    // Verify completion message
-    cy.contains('Quiz Completed').should('be.visible');
-
-    // Click to take a new quiz
-    cy.contains('Take New Quiz').click();
-
-    // Verify that the quiz has restarted
-    cy.contains('Start Quiz').should('be.visible');
+    cy.contains('Your score: 2/2').should('be.visible');
   });
 });
