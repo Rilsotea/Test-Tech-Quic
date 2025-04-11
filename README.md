@@ -1,5 +1,5 @@
 # Testing the Tech Quiz
-video link: https://app.screencastify.com/v3/watch/2vX0j1gk4r7a5qz6b8cE
+video link: https://app.screencastify.com/v3/watch/iUDPZLFgtSke53pUZwDC
 
 ## Description
 This project is a quiz game that tests your knowledge on various topics. It is designed to be fun and educational, allowing users to learn while they play. The game consists of multiple-choice questions, and users can select their answers by clicking on the options provided.
