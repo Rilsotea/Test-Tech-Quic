@@ -1,14 +1,5 @@
 [
   {
-    "question": "What is Node.js used for?",
-    "answers": [
-      { "text": "Backend development", "isCorrect": true },
-      { "text": "Frontend development", "isCorrect": false },
-      { "text": "Database management", "isCorrect": false },
-      { "text": "Designing UI", "isCorrect": false }
-    ]
-  },
-  {
     "question": "Which of these is NOT a JavaScript data type?",
     "answers": [
       { "text": "String", "isCorrect": false },
