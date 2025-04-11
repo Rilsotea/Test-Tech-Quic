@@ -20,7 +20,7 @@ run npm install to install the dependencies
 
 npm run build to build the project
 
-npm run start to have the project running
+npm run start:dev to have the project running
 npm run test to run the tests
 
 ## Requirements
@@ -41,7 +41,7 @@ No requirements needed
 
 ## Usage 
 To use the project, simply run the following command in your terminal:
-npm run start
+npm run start:dev
 npm run test
 
 ## Credits
